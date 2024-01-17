@@ -28,8 +28,8 @@ public class Produto {
 	@NotBlank(message = "O nome é obrigatório.")
 	@Size(min = 3, message = "O nome deve ter no mínimo 3 caracteres.")
 	private String nome;
-
-	@Size(min = 0)
+	
+	@Size(min=0, max =300, message = "A descrição deve ter no máximo 300 caracteres.")
 	private String descricao;
 
 	@JsonFormat(shape = JsonFormat.Shape.STRING)
