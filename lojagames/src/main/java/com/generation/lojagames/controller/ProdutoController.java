@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -46,14 +47,25 @@ public class ProdutoController {
 	public ResponseEntity<List<Produto>> getByNome(@PathVariable String nome) {
 		return ResponseEntity.ok(produtoRepository.findAllByNomeContainingIgnoreCase(nome));
 	}
-	
+
 	@PostMapping
-	public ResponseEntity<Produto> post (@Valid @RequestBody Produto produto){
-		if(categoriaRepository.existsById(produto.getCategoria().getId()))
-		return ResponseEntity.status(HttpStatus.CREATED)
-				.body(produtoRepository.save(produto));
-		
-		throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Categoria não existe", null);	
+	public ResponseEntity<Produto> post(@Valid @RequestBody Produto produto) {
+		if (categoriaRepository.existsById(produto.getCategoria().getId()))
+			return ResponseEntity.status(HttpStatus.CREATED).body(produtoRepository.save(produto));
+
+		throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Categoria não existe!", null);
 	}
-	
+
+	@PutMapping
+	public ResponseEntity<Produto> put (@Valid @RequestBody Produto produto){
+		if(produtoRepository.existsById(produto.getCategoria().getId())) {
+			if(categoriaRepository.existsById(produto.getCategoria().getId()))
+				return ResponseEntity.status(HttpStatus.OK)
+						.body(produtoRepository.save(produto));
+			
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Categoria não existe!",null);
+		}
+		
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+	}
 }
